@@ -1,20 +1,36 @@
 import { Request, Response } from 'express';
 import Order from '../model/order';
+import User from '../model/user';
+import { OrderInterface } from '../interface/orderInterface';
+import { UserInterface } from '../interface/userInterface';
 
 export const createOrder = async (req: Request, res: Response) => {
 	try {
-		const { user_id, amount } = req.body;
-		const order = await Order.create({ user_id, amount });
+		console.log('req.body:', req.body)
+		const { amount } = req.body;
+		const user_id = req.user;
+		console.log('user_id:', req.user);
+		const user: UserInterface | null = await User.findOne({
+			where: { id: user_id },
+		});
+		if (!user) {
+			return res.status(404).json({ message: 'User not found' });
+		}
+		const order: OrderInterface = await Order.create({ user_id, amount });
+		if (!order) {
+			return res.status(500).json({ message: 'Error creating order' });
+		}
+
 		res.status(201).json(order);
 	} catch (err) {
-		console.error('Error creating order:', console.error);
+		console.error('Error creating order:', err);
 		res.status(500).json({ message: 'Internal server error' });
 	}
 };
 
 export const getAllOrders = async (req: Request, res: Response) => {
 	try {
-		const orders = await Order.findAll(	);
+		const orders = await Order.findAll();
 		res.json(orders);
 	} catch (error) {
 		console.error(error);

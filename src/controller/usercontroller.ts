@@ -46,7 +46,13 @@ export const createUser = async (req: Request, res: Response) => {
 			.hash(password, 10)
 			.then((hash) => {
 				hashedPwd = hash;
-				const newUser = User.create({ firstName, lastName, email, password: hashedPwd});
+				const newUser = User.create({
+					firstName,
+					lastName,
+					email,
+					password: hashedPwd,
+					
+				});
 				return res.status(201).json({ newUser });
 			})
 			.catch((err) => console.error(err.message));

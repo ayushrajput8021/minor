@@ -19,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
             return res.status(401).json({ message: 'Password not valid' });
         }
 
-		const accessToken = jwt.sign({ email: user.email }, secret, {
+		const accessToken = jwt.sign({ id: user.id }, secret, {
 			expiresIn: '3600s',
 		});
 		return res.json(accessToken);
